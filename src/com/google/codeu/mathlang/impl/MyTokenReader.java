@@ -14,9 +14,9 @@
 
 package com.google.codeu.mathlang.impl;
 
-import java.io.IOException;
+import java.io.*;
 
-import com.google.codeu.mathlang.core.tokens.Token;
+import com.google.codeu.mathlang.core.tokens.*;
 import com.google.codeu.mathlang.parsing.TokenReader;
 
 // MY TOKEN READER
@@ -27,9 +27,14 @@ import com.google.codeu.mathlang.parsing.TokenReader;
 // work with the test of the system.
 public final class MyTokenReader implements TokenReader {
 
+  public String source;
+  private int pos;
+
   public MyTokenReader(String source) {
     // Your token reader will only be given a string for input. The string will
     // contain the whole source (0 or more lines).
+    this.source = source;
+
   }
 
   @Override
@@ -41,6 +46,36 @@ public final class MyTokenReader implements TokenReader {
     // If for any reason you detect an error in the input, you may throw an IOException
     // which will stop all execution.
 
-    return null;
+    Token token = null;
+    if( source.length() == 0) {
+      return null;
+    } else if ( source.length() == 1) {
+      return token = new SymbolToken(source.charAt(0));
+    } else {
+      for(int i = 1; i < source.length(); i++) {
+        if(Character.isWhiteSpace(source.charAt(i))) {
+          token = new StringToken(source);
+        } else if (!Character.isWhiteSpace(source.charAt(i))) {
+          return token = new NameToken(source);
+        } else {
+            if(isNumber(source.charAt(i))) {
+              double j = i;
+              return token = new NumberToken(j);
+            }
+        }
+      }
+    }
+    return token;
+  }
+
+  public boolean isNumber(char x) {
+    String value = x + "";
+    boolean num = false;
+    for (int i = 0; i < 10; i++) {
+      if(String.getValueOf(i) == value) {
+        return num = true;
+      }
+    }
+    return num;
   }
 }
